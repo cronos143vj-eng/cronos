@@ -1,21 +1,30 @@
 import { PrismaClient } from '@prisma/client';
 
-const prismaClientSingleton = () => {
+let prismaClient: PrismaClient | undefined;
+
+function createPrismaClient() {
   return new PrismaClient();
-};
+}
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+function getPrismaClient() {
+  if (!prismaClient) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is not set. Prisma client cannot be initialized during build. Set DATABASE_URL in Vercel or avoid DB access at build time.');
+    }
+    if (process.env.NODE_ENV === 'production') {
+      prismaClient = createPrismaClient();
+    } else {
+      const globalAny = globalThis as any;
+      if (!globalAny.__prisma) globalAny.__prisma = createPrismaClient();
+      prismaClient = globalAny.__prisma;
+    }
+  }
+  return prismaClient;
+}
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
-
-// Lazy initialization using a Proxy to prevent build-time static analysis failures
-// when the DATABASE_URL environment variable is missing.
-export const prisma = new Proxy({} as PrismaClientSingleton, {
-  get: (target, prop) => {
-    const client = globalForPrisma.prisma ?? prismaClientSingleton();
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = client;
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_, prop) {
+    const client = getPrismaClient();
     return (client as any)[prop];
   }
 });
