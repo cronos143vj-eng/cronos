@@ -7,6 +7,8 @@ import CTAButton from '@/components/ui/CTAButton';
 import Navbar from '@/components/layout/Navbar';
 import { trackEventServer } from '@/lib/services/event.service';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = await prisma.product.findUnique({
