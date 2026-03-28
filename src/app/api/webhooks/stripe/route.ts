@@ -1,5 +1,7 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
 import { stripe } from "@/lib/stripe";
 import { updateOrderStatusByStripeId } from "@/lib/services/order.service";
 
