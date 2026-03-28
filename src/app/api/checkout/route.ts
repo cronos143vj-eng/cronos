@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createPendingOrder } from '@/lib/services/order.service';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();

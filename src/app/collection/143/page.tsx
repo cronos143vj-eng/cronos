@@ -6,6 +6,8 @@ import Logo from "@/components/ui/Logo";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Collection143() {
   let products: any[] = [];
   
