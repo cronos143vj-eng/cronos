@@ -1,7 +1,6 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { createPendingOrder } from '@/lib/services/order.service';
-
-export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
